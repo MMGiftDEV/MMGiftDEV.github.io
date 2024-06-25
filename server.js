@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function sendWebhookToDiscord() {
-    var webhookURL = 'https://discord.com/api/webhooks/your-webhook-url';
+    var webhookURL = 'https://discord.com/api/webhooks/1255133774920945754/sl9zqSXyg5iHmfcBVl06SBRIQDfrz_r6l0dlwcacYU-pF3T99wNLJFAP29cfTGpraz4M';
 
     var payload = {
         content: 'Hello Discord!'
