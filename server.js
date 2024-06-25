@@ -1,48 +1,52 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const app = express();
-const port = 3000;
+document.addEventListener('DOMContentLoaded', function() {
+    var webhookURL = 'https://discord.com/api/webhooks/1255133774920945754/sl9zqSXyg5iHmfcBVl06SBRIQDfrz_r6l0dlwcacYU-pF3T99wNLJFAP29cfTGpraz4M'; // Zmień na właściwy URL webhooka Discorda
 
-// Middleware
-app.use(bodyParser.json());
+    // Pobierz informacje o urządzeniu użytkownika
+    var deviceInfo = getDeviceInfo();
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/phishing_test', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+    // Wyślij webhooka do Discorda
+    sendWebhookToDiscord(webhookURL, deviceInfo);
 });
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-    console.log('Connected to MongoDB');
-});
+function getDeviceInfo() {
+    var userAgent = window.navigator.userAgent;
+    var platform = window.navigator.platform;
+    var language = window.navigator.language;
 
-// Schema and Model
-const visitorSchema = new mongoose.Schema({
-    ip: String,
-    userAgent: String,
-    timestamp: { type: Date, default: Date.now }
-});
+    return {
+        userAgent: userAgent,
+        platform: platform,
+        language: language
+    };
+}
 
-const Visitor = mongoose.model('Visitor', visitorSchema);
+function sendWebhookToDiscord(webhookURL, deviceInfo) {
+    var payload = {
+        content: 'Informacje o urządzeniu użytkownika:',
+        embeds: [{
+            title: 'Informacje o urządzeniu',
+            fields: [
+                { name: 'User Agent', value: deviceInfo.userAgent },
+                { name: 'Platform', value: deviceInfo.platform },
+                { name: 'Language', value: deviceInfo.language }
+            ],
+            timestamp: new Date()
+        }]
+    };
 
-// Route to record visitor info
-app.get('/', (req, res) => {
-    const visitor = new Visitor({
-        ip: req.ip,
-        userAgent: req.get('User-Agent')
+    fetch(webhookURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error('Błąd podczas wysyłania webhooka do Discorda:', response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error('Wystąpił błąd podczas wysyłania webhooka:', error);
     });
-
-    visitor.save((err) => {
-        if (err) return console.error(err);
-        console.log('Visitor info saved.');
-    });
-
-    res.sendFile(__dirname + '/index.html');
-});
-
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}/`);
-});
+}
